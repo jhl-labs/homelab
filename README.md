@@ -28,15 +28,18 @@
   - cursor (PRO+)
 
 ## 주요 개발 환경
-### Linux 환경
-  - AMD Ryzen Threadripper 7960X (24C / 48T) 4.2GHz~5.3GHz
-  - Sasmsung 128GB DDR5 ECC (32gb x 4)
-  - RTX5090 (32GB) + RTX4090 (24GB) + RTX3090x2(24GB with nvlink)
-  - Ubuntu 22.04 
+### Linux 환경 (Ubuntu 22.04)
+  - AMD Ryzen Threadripper 7960X (24C / 48T) 4.2GHz~5.3GHz Sasmsung 128GB DDR5 ECC (32gb x 4) RTX5090 (32GB) + RTX4090 (24GB) + RTX3090x2(24GB with nvlink)
+  - amd 5600x, amd 5800x, amd7735hs, amd 5560u, amd 5600h, i5-12600, i5-12400 등의 리눅스 노드 운영 (전기세 문제로 100% 가동은 아직 못하는 중 ㅠㅠ)
 
 ### Windows 환경
   - Dell Workstaiton 3680T --> Intel i7-14700k, 96GB DDR5 RAM, 10GB VRAM(RTX 3080), Windows 11 Pro, 원격 데스크톱용
   - 조립 PC --> AMD 7800X3D, 128GB DDR5 RAM, 12GB VRAM(RTX 3080ti), Windows 11 Pro, Windows Hosted Runner 및 자동화용, 운영 환경으로 적용 예정
+  - 갤럭시북5 프로 16인치 226v, 32gb -> 침대에서 누워서 바이브 코딩하는 용도.  주로 이 노트북으로 3680T나 조립 PC에 원격 접속해서 개발을 진행 
+
+### Mac 환경
+  - macbook pro m4 24GB <- 스벅 입장권. 외부 컨퍼런스/세미나/카페 방문 시 활용 (메인)
+  - macbook pro m1 max 32GB <- 책상에서 시즈모드로 사용 (m4에서 원격 접속용)
 
 ### 기타 인프라
   - github team license +copilot license 를 통해 1인 GitHub Org 운영중
@@ -52,7 +55,7 @@
       - claude code의 적극적인 개발/운영에 활용 (by github actions); 참고: https://jhl-labs.github.io/sdlc-history/
 
 ## 주요 개발 프로젝트
-  - (공개) sepilot desktop (claude desktop과 같은 다목적 gui 기반 ai agent 어플리케이션)
+  - (공개) sepilot desktop (claude desktop과 같은 다목적 gui 기반 ai agent 어플리케이션)  -> 현재 사내 프로젝트로 추진 중 (dsdn-desktop)
   - (비공개) sepilot cli (python 기반의 cli agent, claude code가 비싸서 로컬 운영에서 사용하려고 개발)
   - (비공개) sepilot wiki (내부 지식 문서에 대해 git repo 스캔 및 외부 지식 자동 탐색, k8s 인프라 변화 감지를 문서화, deepwiki를 참고)
   - (비공개) sepilot ssh (warp 터미널을 꿈꾸고, 만든 ai 협력 기반의 웹 ssh client 서비스)
