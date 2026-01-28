@@ -1,79 +1,172 @@
-# Homelab 인프라 소개
+# 🏠 Homelab 인프라 소개
 
-## Homelab의 목적
-- 집 환경에서 개발 클러스터를 구성하여 자유로운 개발 및 실험, 연구를 진행
+> **“집에서 만드는 개발 클러스터, 자유로운 실험과 연구를 위한 개인 인프라”**
 
-## 네트워크 소개
-- Synology Router를 통한 Enterprise 서비스 지원
-  - AD 인증, 트래픽 모니터링, VLAN 관리
-- 10G / 2.5G / 1G Switch 의 하이브리드 사용으로 고부하 네트워크 트래픽 처리
+---
 
-## 스토리지 구성
-- Proxmox 를 이용한 Ceph 클러스터 구성
-  - 3 MON, 3 MGR, 11 OSD 를 통한 클러스터 스토리지 제공 (nvme / hdd 기반 RWO, RWX 지원), s3 지원, 각 2TB(nvmex3), 12TB(hddx1) 클러스터 스토리지 풀 확보)
-- Synology NAS 기반 iscsi 지원 (SATA SSD 기반 10G (2TB x 3),   HDD 기반 1G (4TB x 8)
-  
-## k8s 클러스터 소개
-  - rke2 기반 Dev 클러스터 (106 cores, 373GB RAM,  4GPU[104GB VRAM]  )
-  - rke2 기반 Prod 클러스터 (32 cores, 47GB RAM)
+## 🎯 Homelab의 목적
 
-## 주 사용 로컬 AI 모델
-  - ollama
-    - gpt-oss:120b
-    - qwen3-vl:235b
+- **자유로운 개발 및 실험 환경**을 구축하여, 기술 탐구, 프로토타이핑, 연구 활동을 집에서도 가능하게 함
+- **실무에 적용 가능한 인프라 경험**을 쌓기 위한 테스트베드 역할
+- **개인 기술 스택 확장 및 스타트업 준비**를 위한 풀스택 기술 연습장
 
-## 현재 구독하는 상용 AI 모델 및 Agent, IDE
-  - claude-code  (MAX+ $200 Plan)
-  - antigravity  (Google AI Pro 1년 구독)
-  - cursor (PRO+)
+---
 
-## 주요 개발 환경
-### Linux 환경 (Ubuntu 22.04)
-  - AMD Ryzen Threadripper 7960X (24C / 48T) 4.2GHz~5.3GHz Sasmsung 128GB DDR5 ECC (32gb x 4) RTX5090 (32GB) + RTX4090 (24GB) + RTX3090x2(24GB with nvlink)
-  - amd 5600x, amd 5800x, amd7735hs, amd 5560u, amd 5600h, i5-12600, i5-12400 등의 리눅스 노드 운영 (전기세 문제로 100% 가동은 아직 못하는 중 ㅠㅠ)
+## 🌐 네트워크 구성
 
-### Windows 환경
-  - Dell Workstaiton 3680T --> Intel i7-14700k, 96GB DDR5 RAM, 10GB VRAM(RTX 3080), Windows 11 Pro, 원격 데스크톱용
-  - 조립 PC --> AMD 7800X3D, 128GB DDR5 RAM, 12GB VRAM(RTX 3080ti), Windows 11 Pro, Windows Hosted Runner 및 자동화용, 운영 환경으로 적용 예정
-  - 갤럭시북5 프로 16인치 226v, 32gb -> 침대에서 누워서 바이브 코딩하는 용도.  주로 이 노트북으로 3680T나 조립 PC에 원격 접속해서 개발을 진행 
+- **Synology 라우터** 기반의 엔터프라이즈급 네트워크 서비스 제공
+  - AD 인증, 트래픽 모니터링, VLAN 관리 등 기업 수준의 네트워크 제어
+- **하이브리드 스위칭 환경** (10G / 2.5G / 1G)으로 고부하 트래픽 처리 가능
+  - 고속 데이터 전송 및 저지연 환경 구현
 
-### Mac 환경
-  - macbook pro m4 24GB <- 스벅 입장권. 외부 컨퍼런스/세미나/카페 방문 시 활용 (메인)
-  - macbook pro m1 max 32GB <- 책상에서 시즈모드로 사용 (m4에서 원격 접속용)
+---
 
-### 기타 인프라
-  - github team license +copilot license 를 통해 1인 GitHub Org 운영중
-  - Jira Server / Confluence Server 라이선스 보유 중
-  - github actions를 위한 self hosted runner를 10-50개 등록하여 GitHub Org 운영. 
+## 💾 스토리지 아키텍처
 
-## 주요 개발 방식
-  - linux workstation에 ssh 환경 내에서 개발 또는 윈도우 원격 데스크톱으로 개발 진행
-  - claude code를 통하여 다중 세션 (10~15개)를 윈도우 원격 환경에서 띄운 후 개발 진행  <-  세션이 안끊어짐. 개인적으로 tmux/screen 보다 더 편한 사용성..
-  - application 개발은 cursor/antigravity를 이용하여 개발.  로컬 빌드 및 테스트를 수행하나 CI/CD 적용으로 백그라운드로 github actions로 release 패키지 생성
-  - web service 개발은 claude code를 통해 리눅스 환경에서 진행.
-      - docker-compose 기반으로 1차 개발 수행 -> helm/argocd를 통해 gitops로 내부 개발 클러스터에 배포 -> 안정적 운영 시 같은 방법으로 운영 클러스터 배포
-      - claude code의 적극적인 개발/운영에 활용 (by github actions); 참고: https://jhl-labs.github.io/sdlc-history/
+### 1. **Proxmox 기반 Ceph 클러스터**
+- **클러스터 구성**: 3 MON, 3 MGR, 11 OSD
+- **스토리지 타입**: NVMe (RWO/RWX) + HDD (RWO/RWX) 혼합
+- **스토리지 용량**: NVMe 2TB × 3, HDD 12TB × 1 → 총 18TB 이상의 클러스터 풀
+- **기능 지원**: S3 호환 객체 저장소, 블록/파일 스토리지, 고가용성
 
-## 주요 개발 프로젝트
-  - (공개) sepilot desktop (claude desktop과 같은 다목적 gui 기반 ai agent 어플리케이션)  -> 현재 사내 프로젝트로 추진 중 (dsdn-desktop)
-  - (부분공개) euno.news (github actions 중심으로 외부 개발자 커뮤니티의 글들을 수집 -> 번역/요약)  repo는 비공개. github pages는 공개
-  - (비공개) sepilot cli (python 기반의 cli agent, claude code가 비싸서 로컬 운영에서 사용하려고 개발)
-  - (비공개) sepilot wiki (내부 지식 문서에 대해 git repo 스캔 및 외부 지식 자동 탐색, k8s 인프라 변화 감지를 문서화, deepwiki를 참고)
-  - (비공개) sepilot ssh (warp 터미널을 꿈꾸고, 만든 ai 협력 기반의 웹 ssh client 서비스)
-  - (비공개) jhl-space 용 SaaS / IDP 서비스 (s3, 인증, 네트워크, 스토리지, 노드, 리소스, 보안, gitops 관리용 SaaS 서비스들)
-  - (비공개) jtube (youtube mirror 서비스, AI 자막 번역, 요약을 위해 제작, 개발 목적은 자녀의 동영상 스트리밍 통제, 적절한 큐레이션 제공 목적)
-  - (비공개) the pics (인스타그램 컨셉 자체 사진 공유 플랫폼,  개발 목적은 Google Photos의 ai 분류 기능이 너무 보급형이라 가족 사진들(특히 어린이집 사진)을 제대로 인물 분류 / 장소 분류 시키게 하려고
-  - (비공개) jhl-search (내부 개발 리소스[github, confluence] 및 외부 개발 정보(hackersnews, google, meta 등)에 대한 크롤링 정보에 대한 opensearch 기반의 시맨틱 웹 검색 환경 제공.  자체적인 google 검색엔진 생태계를 만들고자 개발함 (RAG 연동 및 MCP 활용 목적)
-  - (비공개) jhl-tables (회사 내부의 excel 환경에 불만을 품고, 웹 excel 을 바이브로 구현. python 기반의 엑셀 함수 및 ai agent 기능을 심어서 사내에서 엑셀 안쓰고 데이터 취합에 활용하려고 개발함)
+### 2. **Synology NAS 기반 iSCSI 스토리지**
+- **SSD 기반 (10G)**: SATA SSD 2TB × 3 → 고속 블록 스토리지
+- **HDD 기반 (1G)**: 4TB × 8 → 대용량 백업/아카이브 용도
 
-## 왜 이렇게 하는가?
-- 회사 내 커리어 변천사에 맞춰 변화하는 직무/기술에 대응하는 삶
-  - 네트워크(WiFi 장비, 스위치 장비) 엔지니어 -> IoT 엔지니어 -> SE 품질 엔지니어 -> SE 인프라 엔지니어 -> DevOps 엔지니어 -> DevOps 에반젤리즘 -> 플랫폼 엔지니어 -> DevRel + 플랫폼 엔지니어
-- 회사 내 부족한 환경에 대해 분노의 개발 (이런것도 못하면서 무슨 SW 개발을 해?? 라는 마음으로 만들어놓고 조직 내 공유하는 편)
-- (전)SE 앤지니어로서 선진 문물(?) 배포에 대한 사명감 ( 부문의 SE 엔지니어였던지라...)
-- 언젠가 꿈꾸는 스타트업 창업을 위한 풀스택 기술 능력 확보. 회사의 닫힌 기술이 아닌 열린 기술(?)을 계속 공부하여 언제든 나갈 기술력 확보
+---
 
-## 앞으로의 계획
-- sepilot desktop 과 sepilot cli 의 오픈소스 공개. 그리고 그외 도구들에 대한 거취 결정(?)
-- 바이브코딩으로 만든 프로젝트에 대한 프로젝트 지식 & 스킬을 온전히 본인의 능력으로 흡수하는 일
-- 제 2의 부가가치(?) 창출. 성공적인 자녀 교육을 위한 AI Agent 준비
+## 🐳 Kubernetes 클러스터
+
+### 1. **Dev 클러스터 (RKE2 기반)**
+- **CPU**: 106코어
+- **RAM**: 373GB
+- **GPU**: 4개 (총 104GB VRAM) — RTX 5090, 4090, 3090×2 (NVLink)
+- **용도**: 개발, 테스트, AI 모델 학습 및 실험
+
+### 2. **Prod 클러스터 (RKE2 기반)**
+- **CPU**: 32코어
+- **RAM**: 47GB
+- **용도**: 안정적인 운영 환경, CI/CD 배포 대상
+
+---
+
+## 🤖 주요 로컬 AI 모델
+
+- **Ollama 기반 모델**
+  - `gpt-oss:120b` — 오픈소스 기반 대형 언어 모델
+  - `qwen3-vl:235b` — 멀티모달 지원, 시각-언어 통합 모델
+
+---
+
+## 💳 구독 중인 상용 AI 도구 및 IDE
+
+| 도구 | 구독 플랜 | 용도 |
+|------|-----------|------|
+| **Claude Code** | MAX+ ($200/월) | 다중 세션 개발, 코드 생성 및 리팩토링 |
+| **Antigravity** | Google AI Pro (1년 구독) | AI 기반 개발 보조, 코드 분석 및 제안 |
+| **Cursor** | PRO+ | AI 통합 IDE, 로컬/원격 개발 환경 |
+
+---
+
+## 💻 주요 개발 환경
+
+### 🐧 Linux 환경 (Ubuntu 22.04)
+
+- **메인 워크스테이션**
+  - CPU: AMD Ryzen Threadripper 7960X (24C/48T, 4.2~5.3GHz)
+  - RAM: Samsung 128GB DDR5 ECC (32GB × 4)
+  - GPU: RTX 5090 (32GB) + RTX 4090 (24GB) + RTX 3090×2 (24GB, NVLink)
+- **보조 노드**
+  - AMD 5600X, 5800X, 7735HS, 5560U, 5600H, Intel i5-12600, i5-12400 등
+  - *전기세 문제로 100% 가동은 아직 미흡 😅*
+
+### 🪟 Windows 환경
+
+- **Dell Workstation 3680T**
+  - CPU: i7-14700K, RAM: 96GB DDR5, GPU: RTX 3080 (10GB)
+  - 용도: 원격 데스크톱 개발 환경
+- **조립 PC**
+  - CPU: AMD 7800X3D, RAM: 128GB DDR5, GPU: RTX 3080 Ti (12GB)
+  - 용도: Windows Hosted Runner, 자동화 및 운영 환경
+- **Galaxy Book5 Pro 16인치 (226V, 32GB)**
+  - 용도: 침대에서의 “바이브 코딩” — 원격 접속용
+
+### 🍏 Mac 환경
+
+- **MacBook Pro M4 (24GB)**
+  - 용도: 외부 컨퍼런스/카페/세미나 — **메인 이동용**
+- **MacBook Pro M1 Max (32GB)**
+  - 용도: 책상에서의 시즈모드 — **M4에서 원격 접속용**
+
+---
+
+## 🛠️ 기타 인프라
+
+- **GitHub Team + Copilot 라이선스** → 1인 GitHub Organization 운영
+- **Jira Server / Confluence Server** 라이선스 보유 → 내부 프로젝트 관리
+- **Self-hosted GitHub Actions Runner** → 10~50개 노드로 CI/CD 자동화
+
+---
+
+## 🧩 주요 개발 방식
+
+- **Linux 워크스테이션에서 SSH 기반 개발** 또는 **Windows 원격 데스크톱** 활용
+- **Claude Code**를 통한 **10~15개 동시 세션** 운영 → `tmux/screen`보다 편리한 멀티세션 경험
+- **Cursor / Antigravity**를 활용한 애플리케이션 개발 → 로컬 빌드/테스트 후 GitHub Actions로 CI/CD 자동화
+- **Web Service 개발 프로세스**
+  1. `docker-compose`로 로컬 개발
+  2. `Helm + ArgoCD`로 GitOps 방식으로 Dev 클러스터 배포
+  3. 안정화 후 Prod 클러스터로 동일 방식 배포
+- **Claude Code**를 통한 개발/운영 자동화 → [참고: SDLG History](https://jhl-labs.github.io/sdlc-history/)
+
+---
+
+## 🚀 주요 개발 프로젝트
+
+| 프로젝트 | 공개 여부 | 설명 |
+|----------|-----------|------|
+| **sepilot desktop** | 공개 (사내 프로젝트: `dsdn-desktop`) | GUI 기반 AI Agent 애플리케이션 — Claude Desktop과 유사 |
+| **euno.news** | 부분공개 | GitHub Actions 기반 외부 커뮤니티 글 수집 → 번역/요약 → GitHub Pages 공개 |
+| **sepilot cli** | 비공개 | Python 기반 CLI Agent — Claude Code 비용 절감을 위한 로컬 운영용 |
+| **sepilot wiki** | 비공개 | Git repo 스캔 + 외부 지식 탐색 + K8s 변화 감지 → 문서화 (DeepWiki 참고) |
+| **sepilot ssh** | 비공개 | AI 협력 기반 웹 SSH 클라이언트 — Warp Terminal을 목표로 개발 |
+| **jhl-space SaaS / IDP** | 비공개 | S3, 인증, 네트워크, 스토리지, 보안, GitOps 관리용 SaaS |
+| **jtube** | 비공개 | YouTube 미러 서비스 — AI 자막 번역/요약 → 자녀 콘텐츠 통제 및 큐레이션 |
+| **the pics** | 비공개 | 인스타그램 컨셉 사진 공유 플랫폼 — Google Photos의 AI 분류 부족 보완 |
+| **jhl-search** | 비공개 | 내부/외부 개발 리소스 크롤링 → OpenSearch 기반 시맨틱 검색 (RAG + MCP 연동) |
+| **jhl-tables** | 비공개 | 웹 기반 Excel — Python 함수 + AI Agent 기능 통합 → 사내 엑셀 대체 |
+
+---
+
+## 🤔 왜 이렇게 하는가?
+
+- **직무 변화에 대응하기 위한 기술 확장**
+  - 네트워크 → IoT → SE 품질 → 인프라 → DevOps → 플랫폼 → DevRel
+- **회사 내 부족한 환경에 대한 ‘분노의 개발’**
+  - “이런 것도 못하면서 무슨 SW 개발을 해?”라는 마음으로 만들어 조직 내 공유
+- **(전) SE 엔지니어로서의 사명감**
+  - 선진 기술 도입 및 확산을 위한 ‘기술 에반젤리즘’
+- **스타트업 창업을 위한 기술 준비**
+  - 닫힌 기업 기술이 아닌, **열린 기술 스택**을 지속적으로 학습
+
+---
+
+## 📈 앞으로의 계획
+
+1. **sepilot desktop & sepilot cli 오픈소스 공개** → 그 외 도구들의 공개 여부 결정
+2. **바이브코딩으로 만든 프로젝트의 지식/스킬을 완전히 내 것으로 흡수**
+3. **제2의 부가가치 창출** → 성공적인 자녀 교육을 위한 AI Agent 개발 및 적용
+
+---
+
+> ✨ **“기술은 끝이 없고, 호기심은 끝이 없다. 집에서 시작하는 인프라가, 내일의 혁신이 된다.”**
+
+---
+
+## 📌 추가 제안
+
+- 이 문서를 **PDF 또는 Notion 템플릿**으로 정리하면 더 세련되게 공유 가능
+- **인프라 아키텍처 다이어그램** (Mermaid) 또는 **리소스 사용량 차트** (Plotly)를 추가하면 시각적 이해도 향상
+- 필요하시면 **프로젝트별 우선순위 매트릭스**나 **기술 스택 맵**도 만들어 드릴 수 있어요!
+
+---
