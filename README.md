@@ -9,7 +9,7 @@
 - 10G / 2.5G / 1G Switch 의 하이브리드 사용으로 고부하 네트워크 트래픽 처리
 
 ## 스토리지 구성
-- Proxmox 를 이용한 Ceph 클러스터 규송
+- Proxmox 를 이용한 Ceph 클러스터 구성
   - 3 MON, 3 MGR, 11 OSD 를 통한 클러스터 스토리지 제공 (nvme / hdd 기반 RWO, RWX 지원), s3 지원, 각 2TB(nvmex3), 12TB(hddx1) 클러스터 스토리지 풀 확보)
 - Synology NAS 기반 iscsi 지원 (SATA SSD 기반 10G (2TB x 3),   HDD 기반 1G (4TB x 8)
   
