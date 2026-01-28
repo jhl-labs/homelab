@@ -56,6 +56,7 @@
 
 ## 주요 개발 프로젝트
   - (공개) sepilot desktop (claude desktop과 같은 다목적 gui 기반 ai agent 어플리케이션)  -> 현재 사내 프로젝트로 추진 중 (dsdn-desktop)
+  - (부분공개) euno.news (github actions 중심으로 외부 개발자 커뮤니티의 글들을 수집 -> 번역/요약)  repo는 비공개. github pages는 공개
   - (비공개) sepilot cli (python 기반의 cli agent, claude code가 비싸서 로컬 운영에서 사용하려고 개발)
   - (비공개) sepilot wiki (내부 지식 문서에 대해 git repo 스캔 및 외부 지식 자동 탐색, k8s 인프라 변화 감지를 문서화, deepwiki를 참고)
   - (비공개) sepilot ssh (warp 터미널을 꿈꾸고, 만든 ai 협력 기반의 웹 ssh client 서비스)
